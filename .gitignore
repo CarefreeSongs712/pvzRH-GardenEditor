@@ -9,4 +9,3 @@ Lib/
 DLLs/
 .gitignore
 .bat
-!copy.bat
