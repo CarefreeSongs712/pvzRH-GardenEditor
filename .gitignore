@@ -1,0 +1,9 @@
+*.pyc
+*.pyd
+*.exe
+python*
+*.dll
+tcl/
+Scripts/
+Lib/
+DLLs/

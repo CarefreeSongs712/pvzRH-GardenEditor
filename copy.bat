@@ -11,4 +11,9 @@ copy /Y "%sourceDir%GardenData7.json" "%targetDir%" > nul
 copy /Y "%sourceDir%GardenData8.json" "%targetDir%" > nul
 copy /Y "%sourceDir%GardenData9.json" "%targetDir%" > nul
 copy /Y "%sourceDir%GardenData10.json" "%targetDir%" > nul
+copy /Y "%sourceDir%GardenData11.json" "%targetDir%" > nul
+copy /Y "%sourceDir%GardenData12.json" "%targetDir%" > nul
+copy /Y "%sourceDir%GardenData13.json" "%targetDir%" > nul
+copy /Y "%sourceDir%GardenData14.json" "%targetDir%" > nul
+copy /Y "%sourceDir%GardenData15.json" "%targetDir%" > nul
 copy /Y "%sourceDir%GardenData.json" "%targetDir%" > nul
