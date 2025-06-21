@@ -1,11 +1,11 @@
 print("""
 # 原创作者：B站 听雨夜荷
 # 拓展作者：Sh茗
-# 拓展版本：3.1.0
+# 拓展版本：3.2.0
 # 交流群：1015660780
 # 日期：2025/6/16
 # 适配版本：2.6.1
-# 功能：禅境花园修改器 + 深渊植物等级修改
+# 功能：禅境花园修改器 + 深渊植物等级修改 + 深渊植物等级格式化 + 深渊词条刷新次数修改
 """)
 import os
 import time
@@ -16,6 +16,7 @@ from tkinter import *
 from tkinter import font
 from tkinter import ttk
 from tkinter.messagebox import *
+from tkinter import simpledialog
 from PIL import Image, ImageTk
 
 # 定义错误显示函数
@@ -29,7 +30,7 @@ class GardenModifier:
         :param root: Tkinter 根窗口
         """
         self.root = root
-        self.root.title('禅境花园修改器拓展版3.1.0原创：听雨夜荷')
+        self.root.title('禅境花园修改器拓展版3.2.0原创：听雨夜荷')
         self.root.geometry('975x650')  # 调整窗口高度以容纳新增内容
 
         # 切换到当前脚本所在目录
@@ -59,7 +60,7 @@ class GardenModifier:
         """显示公告窗口"""
         # 创建公告窗口
         self.announcement_window = Toplevel(self.root)
-        self.announcement_window.title("公告3.1.0")
+        self.announcement_window.title("公告3.2.0")
         self.announcement_window.geometry("400x200")
         self.announcement_window.resizable(False, False)
         self.announcement_window.transient(self.root)  # 设置为主窗口的子窗口
@@ -75,7 +76,7 @@ class GardenModifier:
         # 添加公告文本
         Label(
             self.announcement_window,
-            text="本修改器为哔哩哔哩up主听雨夜荷制作的，本人只是做了几个拓展功能。拓展功能需要重启游戏.   版本：3.1.0",
+            text="本修改器为哔哩哔哩up主听雨夜荷制作的，本人只是做了几个拓展功能。拓展功能需要重启游戏.   版本：3.2.0",
             font=("SimHei", 12),
             wraplength=380,
             justify=CENTER
@@ -484,6 +485,16 @@ class GardenModifier:
                                                                                                                   y=self.row_15,
                                                                                                                   height=30,
                                                                                                                   width=120,
+                                                                                                                  anchor='nw')
+        Button(text='格式化深渊植物等级', command=self.format_abyss_plant_levels, bg='#FF6347', fg='white').place(x=560,
+                                                                                                                  y=self.row_15,
+                                                                                                                  height=30,
+                                                                                                                  width=160,
+                                                                                                                  anchor='nw')
+        Button(text='深渊词条刷新次数', command=self.open_refresh_count_window, bg='#FF6347', fg='white').place(x=730,
+                                                                                                                  y=self.row_15,
+                                                                                                                  height=30,
+                                                                                                                  width=160,
                                                                                                                   anchor='nw')
 
     def open_author_page1(self):
@@ -986,7 +997,7 @@ class GardenModifier:
 
             # 关闭窗口
             self.money_window.destroy()
-            showinfo("", f"成功更新叶绿素为: {money_value}\n原数值: {original_value}")
+            showinfo("", f"成功更新叶绿素为: {money_value}\n原数值: {original_value}，")
 
         except ValueError as e:
             self.status_label.config(text=f"错误: {str(e)}", fg="red")
@@ -1019,7 +1030,7 @@ class GardenModifier:
         current_level_label.pack(pady=10)
 
         # 创建输入框和标签
-        Label(self.level_window, text="请输入关卡数 (1-31)（关游戏修改）:").pack(pady=10)
+        Label(self.level_window, text="请输入关卡数 (1-31):").pack(pady=10)
 
         self.level_entry = Entry(self.level_window, width=20, font=("Arial", 12))
         self.level_entry.pack(pady=10)
@@ -1090,7 +1101,8 @@ class GardenModifier:
 
             # 关闭窗口
             self.level_window.destroy()
-            showinfo("", f"成功更新深渊关卡为: {level_value}\n原关卡: {original_value}")
+            showinfo("",
+                     f"成功更新深渊关卡为: {level_value}\n原关卡: {original_value}，修改完成！可能需要重启游戏才能生效。建议关闭游戏后修改")
 
         except ValueError as e:
             self.level_status_label.config(text=f"错误: {str(e)}", fg="red")
@@ -1126,47 +1138,48 @@ class GardenModifier:
                 modify_button.pack(pady=20)
 
     def upgrade_abyss_plant(self, plant_id, level):
-                """更新深渊植物等级"""
-                try:
-                    plant_id = int(plant_id)
-                    level = int(level)
-                except ValueError:
-                    ShowError("输入的植物 ID 或等级必须为整数，等级为1~3")
-                    return
+        """更新深渊植物等级"""
+        try:
+            plant_id = int(plant_id)
+            level = int(level)
+        except ValueError:
+            ShowError("输入的植物 ID 或等级必须为整数，等级为1~3")
+            return
 
-                # 构建文件路径
-                player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+        # 构建文件路径
+        player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
 
-                try:
-                    # 读取文件
-                    with open(player_data_path, "r") as file:
-                        player_data = json.load(file)
+        try:
+            # 读取文件
+            with open(player_data_path, "r") as file:
+                player_data = json.load(file)
 
-                    # 查找并更新深渊植物等级
-                    abyss_plant_levels = player_data.get("abyssPlantLevels", [])
-                    found = False
-                    for index, plant in enumerate(abyss_plant_levels):
-                        if plant["thePlantType"] == plant_id:
-                            abyss_plant_levels[index]["level"] = level
-                            found = True
-                            break
+            # 查找并更新深渊植物等级
+            abyss_plant_levels = player_data.get("abyssPlantLevels", [])
+            found = False
+            for index, plant in enumerate(abyss_plant_levels):
+                if plant["thePlantType"] == plant_id:
+                    abyss_plant_levels[index]["level"] = level
+                    found = True
+                    break
 
-                    if not found:
-                        new_plant = {"thePlantType": plant_id, "level": level}
-                        abyss_plant_levels.append(new_plant)
-                        # 按植物 ID 排序
-                        abyss_plant_levels.sort(key=lambda x: x["thePlantType"])
+            if not found:
+                new_plant = {"thePlantType": plant_id, "level": level}
+                abyss_plant_levels.append(new_plant)
+                # 按植物 ID 排序
+                abyss_plant_levels.sort(key=lambda x: x["thePlantType"])
 
-                    # 更新文件内容
-                    player_data["abyssPlantLevels"] = abyss_plant_levels
+            # 更新文件内容
+            player_data["abyssPlantLevels"] = abyss_plant_levels
 
-                    # 保存更新后的文件
-                    with open(player_data_path, "w") as file:
-                        json.dump(player_data, file, indent=4)
+            # 保存更新后的文件
+            with open(player_data_path, "w") as file:
+                json.dump(player_data, file, indent=4)
 
-                    showinfo("成功", "深渊植物等级更新成功.请重启游戏。")
-                except Exception as e:
-                    ShowError("更新失败", type(e), e)
+            showinfo("成功", "深渊植物等级更新成功.请重启游戏。")
+        except Exception as e:
+            ShowError("更新失败", type(e), e)
+
     def maximize_abyss_plant_levels(self):
         """
         将深渊植物等级设置为满级
@@ -1179,7 +1192,16 @@ class GardenModifier:
 
             # 生成满级的深渊植物等级数据
             max_level_data = []
-            plant_ids = [i for i in range(39)] + [234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 300] + [i for i in range(900, 950)] + [i for i in range(1000, 1242)]
+            plant_ids = [i for i in range(39)] + [234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
+                                                  248, 249, 250, 251, 252, 253, 254, 255, 256, 300] + [i for i in
+                                                                                                       range(900,
+                                                                                                             952)] + [i
+                                                                                                                      for
+                                                                                                                      i
+                                                                                                                      in
+                                                                                                                      range(
+                                                                                                                          1000,
+                                                                                                                          1242)]
             for plant_id in plant_ids:
                 max_level_data.append({"thePlantType": plant_id, "level": 3})
 
@@ -1190,10 +1212,61 @@ class GardenModifier:
             with open(player_data_path, 'w', encoding='utf-8') as file:
                 json.dump(player_data, file, indent=4)
 
-            showinfo("提示", "深渊植物已全部设置为满级！")
+            showinfo("提示", "深渊植物已全部设置为满级！，请重启游戏")
         except Exception as e:
             ShowError("修改深渊植物等级时出错", type(e), e)
             showerror("错误", f"修改深渊植物等级时出错：{str(e)}")
+
+    def format_abyss_plant_levels(self):
+        """
+        格式化深渊植物等级
+        """
+        player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+        try:
+            with open(player_data_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            data["abyssPlantLevels"] = []
+            with open(player_data_path, 'w', encoding='utf-8') as file:
+                json.dump(data, file, indent=4)
+            showinfo("成功", "深渊植物等级已格式化，请重启游戏")
+        except FileNotFoundError:
+            showerror("错误", "未找到 playerData.json 文件")
+        except Exception as e:
+            showerror("错误", f"发生未知错误: {e}")
+
+    def open_refresh_count_window(self):
+        """
+        打开输入深渊词条刷新次数的窗口
+        """
+        self.refresh_count_window = Toplevel(self.root)
+        self.refresh_count_window.title("深渊词条刷新次数")
+        self.refresh_count_window.geometry("300x200")
+
+        Label(self.refresh_count_window, text="请输入刷新次数:").pack(pady=10)
+        self.refresh_count_entry = Entry(self.refresh_count_window)
+        self.refresh_count_entry.pack(pady=5)
+
+        Button(self.refresh_count_window, text="修改", command=self.modify_refresh_count).pack(pady=10)
+
+    def modify_refresh_count(self):
+        """
+        修改playerData.json文件中的深渊词条刷新次数
+        """
+        try:
+            count = int(self.refresh_count_entry.get())
+            player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+            with open(player_data_path, 'r') as file:
+                player_data = json.load(file)
+            player_data["abyssRefreshCount"] = count
+            with open(player_data_path, 'w') as file:
+                json.dump(player_data, file)
+            showinfo("成功", "深渊词条刷新次数修改成功！")
+            self.refresh_count_window.destroy()
+        except ValueError:
+            showerror("错误", "请输入有效的整数！")
+        except FileNotFoundError:
+            showerror("错误", "未找到playerData.json文件！")
+
 
 if __name__ == "__main__":
     root = Tk()
