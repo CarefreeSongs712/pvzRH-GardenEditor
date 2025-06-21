@@ -1,12 +1,3 @@
-print("""
-# 原创作者：B站 听雨夜荷
-# 拓展作者：Sh茗
-# 拓展版本：3.2.0
-# 交流群：1015660780
-# 日期：2025/6/16
-# 适配版本：2.6.1
-# 功能：禅境花园修改器 + 深渊植物等级修改 + 深渊植物等级格式化 + 深渊词条刷新次数修改
-""")
 import os
 import time
 import json
@@ -18,7 +9,16 @@ from tkinter import ttk
 from tkinter.messagebox import *
 from tkinter import simpledialog
 from PIL import Image, ImageTk
+import config
 
+print(f"""
+# 作者：听雨夜荷，Sh茗
+# 版本：{config.VERSION}
+# 交流群：{config.QQGROUP_NUMBER}
+# 日期：{config.MODIFY_DATE}
+# 适配版本：{config.RH_VERSION}
+# 功能：禅境花园修改器 + 深渊植物等级修改 + 深渊植物等级格式化 + 深渊词条刷新次数修改
+""")
 # 定义错误显示函数
 ShowError = print
 
@@ -30,7 +30,7 @@ class GardenModifier:
         :param root: Tkinter 根窗口
         """
         self.root = root
-        self.root.title('禅境花园修改器拓展版3.2.0原创：听雨夜荷')
+        self.root.title(f'禅境花园修改器 {config.VERSION}')
         self.root.geometry('975x650')  # 调整窗口高度以容纳新增内容
 
         # 切换到当前脚本所在目录
@@ -57,10 +57,12 @@ class GardenModifier:
         self.load_garden_data()
 
     def show_announcement(self):
-        """显示公告窗口"""
+        """
+            显示公告窗口
+        """
         # 创建公告窗口
         self.announcement_window = Toplevel(self.root)
-        self.announcement_window.title("公告3.2.0")
+        self.announcement_window.title(f"公告{config.VERSION}")
         self.announcement_window.geometry("400x200")
         self.announcement_window.resizable(False, False)
         self.announcement_window.transient(self.root)  # 设置为主窗口的子窗口
@@ -76,24 +78,24 @@ class GardenModifier:
         # 添加公告文本
         Label(
             self.announcement_window,
-            text="本修改器为哔哩哔哩up主听雨夜荷制作的，本人只是做了几个拓展功能。拓展功能需要重启游戏.   版本：3.2.0",
+            text=f"拓展功能需要重启游戏.\n版本：{config.VERSION}",
             font=("SimHei", 12),
             wraplength=380,
             justify=CENTER
         ).place(relx=0.5, rely=0.3, anchor=CENTER)
 
-        # 添加确认按钮
+        def announcement_window_close():
+            self.announcement_window.destroy()
+            return
+        
         Button(
             self.announcement_window,
             text="我已知晓",
-            command=self.close_announcement,
+            command=announcement_window_close,
             font=("SimHei", 12),
             width=15
         ).place(relx=0.5, rely=0.7, anchor=CENTER)
 
-    def close_announcement(self):
-        """关闭公告窗口"""
-        self.announcement_window.destroy()
 
     def load_plant_info(self):
         """
@@ -224,8 +226,8 @@ class GardenModifier:
             import webbrowser
             webbrowser.open("https://space.bilibili.com/2016244084")
 
-        menubar.add_command(label='点此关注up主Sh茗', command=open_author_page)
-        menubar.add_command(label='交流群：1015660780', command=open_author_page)
+        # menubar.add_command(label='点此关注up主Sh茗', command=open_author_page)
+        menubar.add_command(label=f'交流群：{config.QQGROUP_NUMBER}')
         menubar.add_command(label='设置', command=self.open_settings_window)
         self.root.config(menu=menubar)
 
@@ -467,46 +469,30 @@ class GardenModifier:
                                                                     anchor='nw')
         Button(text='一键全成就', command=self.unlock_all_achievements).place(x=400, y=self.row_13, height=30, width=80,
                                                                               anchor='nw')
-        Button(text="关注原创作者：B站 听雨夜荷", command=self.open_author_page1, bg='#FF6347', fg='white').place(x=10, y=self.row_14, height=30,
+        Button(text="关注开发者：B站 听雨夜荷", command=self.open_author_page1).place(x=10, y=self.row_14, height=30,
                                                                                        width=230, anchor='nw')
-        Button(text="关注拓展作者：B站 Sh茗", command=self.open_author_page2, bg='#FF6347', fg='white').place(x=244, y=self.row_14, height=30,
+        Button(text="关注开发者：B站 Sh茗", command=self.open_author_page2).place(x=244, y=self.row_14, height=30,
                                                                                    width=190,
                                                                                    anchor='nw')
-        Button(text='自定义叶绿素', command=self.customize_abyss_money, bg='#FF6347', fg='white').place(x=10, y=self.row_15, height=30,
+        Button(text='自定义叶绿素', command=self.customize_abyss_money).place(x=10, y=self.row_15, height=30,
                                                                               width=120, anchor='nw')
-        Button(text='深渊关卡修改', command=self.modify_abyss_level, bg='#FF6347', fg='white').place(x=140, y=self.row_15, height=30,
+        Button(text='深渊关卡修改', command=self.modify_abyss_level).place(x=140, y=self.row_15, height=30,
                                                                            width=150, anchor='nw')
-        Button(text='深渊植物升级', command=self.open_abyss_upgrade_window, bg='#FF6347', fg='white').place(x=300,
-                                                                                                            y=self.row_15,
-                                                                                                            height=30,
-                                                                                                            width=120,
-                                                                                                            anchor='nw')
-        Button(text='深渊植物一键满级', command=self.maximize_abyss_plant_levels, bg='#FF6347', fg='white').place(x=430,
-                                                                                                                  y=self.row_15,
-                                                                                                                  height=30,
-                                                                                                                  width=120,
-                                                                                                                  anchor='nw')
-        Button(text='格式化深渊植物等级', command=self.format_abyss_plant_levels, bg='#FF6347', fg='white').place(x=560,
-                                                                                                                  y=self.row_15,
-                                                                                                                  height=30,
-                                                                                                                  width=160,
-                                                                                                                  anchor='nw')
-        Button(text='深渊词条刷新次数', command=self.open_refresh_count_window, bg='#FF6347', fg='white').place(x=730,
-                                                                                                                  y=self.row_15,
-                                                                                                                  height=30,
-                                                                                                                  width=160,
-                                                                                                                  anchor='nw')
+        Button(text='深渊植物升级', command=self.open_abyss_upgrade_window).place(x=300,y=self.row_15,height=30, width=120, anchor='nw')
+        Button(text='深渊植物一键满级', command=self.maximize_abyss_plant_levels).place(x=430, y=self.row_15,height=30,width=120, anchor='nw')
+        Button(text='格式化深渊植物等级', command=self.format_abyss_plant_levels).place(x=560,  y=self.row_15,   height=30, width=160,anchor='nw')
+        Button(text='深渊词条刷新次数', command=self.open_refresh_count_window).place(x=730,     y=self.row_15,     height=30,   width=160,    anchor='nw')
 
     def open_author_page1(self):
         """
-        关注原创作者：B站 听雨夜荷
+        关注：B站 听雨夜荷
         """
         import webbrowser
         webbrowser.open("https://space.bilibili.com/3537110030092294")
 
     def open_author_page2(self):
         """
-        关注现作者：B站 Sh茗
+        关注：B站 Sh茗
         """
         import webbrowser
         webbrowser.open("https://space.bilibili.com/2016244084")
@@ -1147,7 +1133,11 @@ class GardenModifier:
             return
 
         # 构建文件路径
-        player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+        
+        if self.config["use_custom_path"]:
+            player_data_path = self.config["path"]
+        else:
+            player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
 
         try:
             # 读取文件
@@ -1184,7 +1174,10 @@ class GardenModifier:
         """
         将深渊植物等级设置为满级
         """
-        player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+        if self.config["use_custom_path"]:
+            player_data_path = self.config["path"]
+        else:
+            player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
         try:
             # 读取 playerData.json 文件
             with open(player_data_path, 'r', encoding='utf-8') as file:
@@ -1192,16 +1185,12 @@ class GardenModifier:
 
             # 生成满级的深渊植物等级数据
             max_level_data = []
-            plant_ids = [i for i in range(39)] + [234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
-                                                  248, 249, 250, 251, 252, 253, 254, 255, 256, 300] + [i for i in
-                                                                                                       range(900,
-                                                                                                             952)] + [i
-                                                                                                                      for
-                                                                                                                      i
-                                                                                                                      in
-                                                                                                                      range(
-                                                                                                                          1000,
-                                                                                                                          1242)]
+            
+            plant_ids = list(self.id_to_name.keys())[1:] # 这里是为了去除 -1 的id
+            
+            #plant_ids = [i for i in range(39)] + [234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
+            #                                      248, 249, 250, 251, 252, 253, 254, 255, 256, 300] + [i for i in range(900,952)] + [i for i in range(1000,1242)]
+            
             for plant_id in plant_ids:
                 max_level_data.append({"thePlantType": plant_id, "level": 3})
 
@@ -1221,7 +1210,10 @@ class GardenModifier:
         """
         格式化深渊植物等级
         """
-        player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+        if self.config["use_custom_path"]:
+            player_data_path = self.config["path"]
+        else:
+            player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
         try:
             with open(player_data_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
@@ -1254,7 +1246,10 @@ class GardenModifier:
         """
         try:
             count = int(self.refresh_count_entry.get())
-            player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
+            if self.config["use_custom_path"]:
+                player_data_path = self.config["path"]
+            else:
+                player_data_path = f"C:/Users/{os.getenv('USERNAME')}/AppData/LocalLow/LanPiaoPiao/PlantsVsZombiesRH/playerData.json"
             with open(player_data_path, 'r') as file:
                 player_data = json.load(file)
             player_data["abyssRefreshCount"] = count

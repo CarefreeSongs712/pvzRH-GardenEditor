@@ -3,9 +3,10 @@
 *.exe
 python*
 *.dll
-tcl/
-Scripts/
-Lib/
-DLLs/
-.gitignore
+/tcl/
+/Scripts/
+/Lib/
+/DLLs/
 .bat
+!copy.bat
+/__pycache__/
